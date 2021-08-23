@@ -1,4 +1,8 @@
-# symbol-dns-tool
+# Symbol-DNS
+
+A tools for Symbol namespace owner to create decentralizes Internet domains.
+
+Using root namespace create top-level domain.
 
 ## Project setup
 ```
@@ -30,5 +34,3 @@ yarn test:e2e
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
