@@ -19,6 +19,6 @@ export default class App extends Vue {}
 
 <style lang="scss" scoped>
 .main {
-    @apply p-20 flex flex-col justify-center flex-grow min-h-full mx-auto items-center;
+    @apply p-20 flex flex-col justify-center flex-grow min-h-screen mx-auto items-center;
 }
 </style>
