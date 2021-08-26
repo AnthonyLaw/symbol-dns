@@ -30,15 +30,15 @@ import DisplayDomainTLD from '@/components/DisplayDomainTLD.vue';
     components: { DisplayDomainTLD },
 })
 export default class Home extends Vue {
-    get centralizedTLDs() {
+    get centralizedTLDs(): string[] {
         return ['.com', '.org', '.io'];
     }
 
-    get decentralizedTLDs() {
+    get decentralizedTLDs(): string[] {
         return ['.happy', '.sunday', '.zero'];
     }
 
-    get decentralizedDomains() {
+    get decentralizedDomains(): string[] {
         return ['super.happy', 'ipfs.sunday', 'nft.zero'];
     }
 }
