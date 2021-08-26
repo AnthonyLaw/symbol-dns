@@ -20,6 +20,7 @@
     "postcss": "^7",
     "sass": "^1.38.0",
     "sass-loader": "10.1.1",
+    "symbol-sdk": "^1.0.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
