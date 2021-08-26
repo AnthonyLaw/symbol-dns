@@ -1,6 +1,9 @@
 <template>
-    <div>Opps, Something went wrong.</div>
-    <div>The domain could not be resolved by Symbol-DNS. Please try another domain...</div>
+    <div class="error">
+        <div>Opps, Something went wrong.</div>
+        <div>The domain could not be resolved by Symbol-DNS.</div>
+        <div>Please try another domain...</div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -11,3 +14,9 @@ import { Options, Vue } from 'vue-class-component';
 })
 export default class Error extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+.error {
+    @apply pt-10 text-center;
+}
+</style>

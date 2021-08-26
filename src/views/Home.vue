@@ -3,20 +3,20 @@
         <div class="card">
             <div class="title">Symbol-DNS</div>
             <div>
-                Decentralized internet domain builds on top of symbol blockchain. Anyone can own decentralized Top-level domains (TLD)
-                Top-level domains (TLD)
+                Decentralized internet domain builds on top of Symbol blockchain. Anyone can own a decentralised top-level domain on Symbol
+                blockchain.
             </div>
         </div>
 
         <div class="card">
             <div class="title">Top-level domains (TLD)</div>
-            <DisplayDomainTLD :domains="centralizedTLDs" />
+            <DisplayDomainTLD :domains="centralisedTLDs" />
 
-            <div><b>Centralized</b> TLD, it controlled and monitor by <b>ICANN</b>.</div>
-            <DisplayDomainTLD :domains="decentralizedTLDs" />
-            <DisplayDomainTLD :domains="decentralizedDomains" />
+            <div><b>Centralised</b> TLD is controlled and monitored by <b>ICANN</b>.</div>
+            <DisplayDomainTLD :domains="decentralisedTLDs" />
+            <DisplayDomainTLD :domains="decentralisedDomains" />
 
-            <div><b>Decentralized</b> TLD, it controlled and monitor <b>YOU</b>.</div>
+            <div><b>Decentralised</b> TLD is controlled and monitored by <b>YOU</b>.</div>
             <div>Create custom TLD names along with domain names and it keeps your info private.</div>
         </div>
     </div>
@@ -30,15 +30,15 @@ import DisplayDomainTLD from '@/components/DisplayDomainTLD.vue';
     components: { DisplayDomainTLD },
 })
 export default class Home extends Vue {
-    get centralizedTLDs(): string[] {
+    get centralisedTLDs(): string[] {
         return ['.com', '.org', '.io'];
     }
 
-    get decentralizedTLDs(): string[] {
+    get decentralisedTLDs(): string[] {
         return ['.happy', '.sunday', '.zero'];
     }
 
-    get decentralizedDomains(): string[] {
+    get decentralisedDomains(): string[] {
         return ['super.happy', 'ipfs.sunday', 'nft.zero'];
     }
 }
