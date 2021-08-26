@@ -1,6 +1,6 @@
 <template>
     <div class="search-domain-box">
-        <input type="text" v-model="domainInput" placeholder="Enter a decentralized domain name" @keyup.enter="go" />
+        <input type="text" v-model="domainInput" placeholder="Enter a decentralized domain name" @keyup.enter="go" :disabled="isRequest" />
     </div>
 </template>
 
@@ -13,19 +13,28 @@ import { Resolver } from '@/services';
 })
 export default class SearchDomainInput extends Vue {
     domainInput = '';
+    isRequest = false;
 
     async go(): Promise<void> {
+        if (this.domainInput === '') {
+            return;
+        }
+
+        this.isRequest = true;
+
         const domainName = this.domainInput.toLowerCase().split('.').reverse();
 
         if (domainName.length > 0 && domainName.length < 3) {
             const resolveUrl = await Resolver.getURL(domainName);
             if (resolveUrl) {
                 window.location.href = resolveUrl;
+                this.isRequest = false;
                 return;
             }
         }
 
         this.$router.push('/error');
+        this.isRequest = false;
     }
 }
 </script>
