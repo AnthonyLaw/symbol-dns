@@ -1,29 +1,25 @@
-import { NamespaceId, RepositoryFactoryHttp, MetadataType, Metadata } from 'symbol-sdk';
+import {
+    NamespaceId,
+    MetadataType,
+    Metadata,
+    KeyGenerator,
+    Account,
+    MetadataTransactionService,
+    UInt64,
+    Deadline,
+    AggregateTransaction,
+} from 'symbol-sdk';
 import { Network } from '@/constants';
-import { Helper } from '@/helper';
-
+import { NodeRepository } from '@/services';
 export class MetadataRepository {
-    /**
-     * Create connection to the network.
-     * @returns RepositoryFactoryHttp
-     */
-    private static getRepositoryFactoryHttp = (): RepositoryFactoryHttp => {
-        const randomIndex = Helper.getRandomIndex(Network.endpoints);
-
-        return new RepositoryFactoryHttp(Network.endpoints[randomIndex], {
-            networkType: Network.type,
-            generationHash: Network.generationHash,
-        });
-    };
-
     /**
      * Get metadata from the network.
      * @param namespaceId NamespaceId
-     * @param metadataKey optonal
+     * @param metadataKeyHex optonal
      * @returns Metadata[]
      */
-    static getMetadata = async (namespaceId: NamespaceId, scopedMetadataKey = Network.metadataKey): Promise<Metadata[]> => {
-        const result = await MetadataRepository.getRepositoryFactoryHttp()
+    static getMetadata = async (namespaceId: NamespaceId, scopedMetadataKey = Network.metadataKeyHex): Promise<Metadata[]> => {
+        const result = await NodeRepository.getRepositoryFactoryHttp()
             .createMetadataRepository()
             .search({
                 metadataType: MetadataType.Namespace,
@@ -33,5 +29,49 @@ export class MetadataRepository {
             .toPromise();
 
         return result.data;
+    };
+
+    /**
+     * Create or update namespace metadata value.
+     * @param privateKey namespace owner private key
+     * @param value metadata value
+     * @param namespaceId target namespace id
+     */
+    static updateMetadata = async (privateKey: string, value: string, namespaceId: NamespaceId): Promise<string> => {
+        const namespaceOwner = Account.createFromPrivateKey(privateKey, Network.type);
+
+        const metadataHttp = NodeRepository.getRepositoryFactoryHttp().createMetadataRepository();
+        const metadataService = new MetadataTransactionService(metadataHttp);
+
+        const epochAdjust = await NodeRepository.getRepositoryFactoryHttp().getEpochAdjustment().toPromise();
+        const averageFeeMultiplier = await NodeRepository.getAverageFeeMultiplier();
+
+        const namespaceMetadata = await metadataService
+            .createNamespaceMetadataTransaction(
+                Deadline.create(epochAdjust),
+                Network.type,
+                namespaceOwner.address,
+                namespaceId,
+                KeyGenerator.generateUInt64Key(Network.metadataKey),
+                value,
+                namespaceOwner.address,
+                UInt64.fromUint(0),
+            )
+            .toPromise();
+
+        const aggregateTransaction = AggregateTransaction.createComplete(
+            Deadline.create(epochAdjust),
+            [namespaceMetadata.toAggregate(namespaceOwner.publicAccount)],
+            Network.type,
+            [],
+        ).setMaxFeeForAggregate(averageFeeMultiplier, 1);
+
+        aggregateTransaction.signedByAccount(namespaceOwner.publicAccount);
+
+        const signedTransaction = namespaceOwner.sign(aggregateTransaction, Network.generationHash);
+
+        await NodeRepository.announceTransaction(signedTransaction);
+
+        return signedTransaction.hash;
     };
 }
