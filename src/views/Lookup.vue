@@ -4,7 +4,7 @@
             <div class="title">Namespace Lookup</div>
 
             <input type="text" v-model="namespace" />
-            <button @click="namespaceLookup">Lookup</button>
+            <button @click="namespaceLookup" :disabled="isLoading">Lookup</button>
         </div>
 
         <div v-if="isNamespaceExist">
@@ -40,7 +40,8 @@
             <div class="card">
                 <div class="title">Sign</div>
                 <input class="w-8/12" type="text" v-model="privateKey" placeholder="Namespace owner's private key" />
-                <button @click="announce">Announce</button>
+                <button @click="announce" :disabled="isLoading">Announce</button>
+                <div v-if="status.length > 0">Status: {{ status }}</div>
             </div>
         </div>
     </div>
@@ -57,31 +58,44 @@ export default class Lookup extends Vue {
     public metadataValue: IDNSRecord[] = [];
     public newDnsRecord: IDNSRecord = { n: '', v: '' };
     public privateKey = '';
+    public isLoading = false;
+    public status = '';
 
     async namespaceLookup(): Promise<void> {
         if (this.namespace === '') {
             return;
         }
 
+        this.isLoading = true;
+
         this.resetState();
 
         const namespace = await Resolver.isNamespaceExist(this.namespace);
 
         if (!namespace) {
+            this.isLoading = false;
             return;
         }
 
-        const metadatas = await Resolver.getMetadataValue(this.namespace);
+        const metadataValue = await Resolver.getMetadataValue(this.namespace);
 
-        if (metadatas.length > 0) {
+        if (metadataValue.length > 0) {
             this.isNamespaceExist = true;
         }
 
-        this.metadataValue = metadatas.split('|').map((record: string) => JSON.parse(`{${record}}`));
+        this.metadataValue = metadataValue.split('|').map((record: string) => JSON.parse(`{${record}}`));
+
+        this.isLoading = false;
     }
 
     async announce(): Promise<void> {
-        await Resolver.updateMetadata(this.privateKey, this.namespace, this.metadataValue);
+        this.isLoading = true;
+
+        this.status = await Resolver.updateMetadata(this.privateKey, this.namespace, this.metadataValue);
+
+        this.isLoading = false;
+
+        return;
     }
 
     addDNSRecord(): void {
@@ -105,6 +119,7 @@ export default class Lookup extends Vue {
         this.metadataValue = [];
         this.privateKey = '';
         this.newDnsRecord = { n: '', v: '' };
+        this.status = '';
     }
 }
 </script>
