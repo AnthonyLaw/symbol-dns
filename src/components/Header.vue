@@ -1,7 +1,12 @@
 <template>
     <header>
-        <div class="title">Symbol-DNS</div>
+        <div class="title">
+            <router-link to="/"> Symbol-DNS </router-link>
+        </div>
         <SearchDomainInput />
+        <div class="menu">
+            <router-link to="/lookup"> Lookup </router-link>
+        </div>
     </header>
 </template>
 
@@ -23,6 +28,10 @@ header {
 
     .title {
         @apply text-left;
+    }
+
+    .menu {
+        @apply absolute right-5;
     }
 }
 </style>
