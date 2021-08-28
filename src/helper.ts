@@ -1,8 +1,4 @@
-interface IDNSRecord {
-    n: string;
-    v: string;
-}
-
+import { IDNSRecord } from '@/types';
 export class Helper {
     /**
      * Process custom DNS Records in the Map.
@@ -24,6 +20,20 @@ export class Helper {
         return domainMap;
     };
 
+    /**
+     * Convert dnsRecords object to metadata string.
+     * @param dnsRecords
+     * @returns string
+     */
+    public static dnsRecordToMetadataValue = (dnsRecords: IDNSRecord[]): string => {
+        return JSON.stringify(dnsRecords).replaceAll('},{', '|').replaceAll('[{', '').replaceAll('}]', '');
+    };
+
+    /**
+     * Get random index.
+     * @param string[]
+     * @returns index number
+     */
     public static getRandomIndex(array: string[]): number {
         return Math.floor(Math.random() * array.length);
     }
