@@ -77,13 +77,14 @@ export default class Lookup extends Vue {
             return;
         }
 
+        this.isNamespaceExist = true;
+
         const metadataValue = await Resolver.getMetadataValue(this.namespace);
 
-        if (metadataValue.length > 0) {
-            this.isNamespaceExist = true;
-        }
-
-        this.metadataValue = metadataValue.split('|').map((record: string) => JSON.parse(`{${record}}`));
+        this.metadataValue = metadataValue
+            .split('|')
+            .filter((record) => record !== '')
+            .map((record: string) => JSON.parse(`{${record}}`));
 
         this.isLoading = false;
     }
@@ -94,8 +95,6 @@ export default class Lookup extends Vue {
         this.status = await Resolver.updateMetadata(this.privateKey, this.namespace, this.metadataValue);
 
         this.isLoading = false;
-
-        return;
     }
 
     addDNSRecord(): void {

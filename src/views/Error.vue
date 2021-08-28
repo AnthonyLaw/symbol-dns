@@ -2,7 +2,7 @@
     <div class="error">
         <div>Opps, Something went wrong.</div>
         <div>The domain could not be resolved by Symbol-DNS.</div>
-        <div>Please try another domain...</div>
+        <div>Check more <router-link class="text-green-300 underline" to="/lookup">here</router-link>.</div>
     </div>
 </template>
 
