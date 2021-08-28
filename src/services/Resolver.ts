@@ -1,6 +1,7 @@
 import { NamespaceId } from 'symbol-sdk';
 import { Helper } from '@/helper';
-import { MetadataRepository } from '@/services';
+import { MetadataRepository, NamespaceRepository } from '@/services';
+import { IDNSRecord } from '@/types';
 
 export class Resolver {
     /**
@@ -33,5 +34,50 @@ export class Resolver {
         }
 
         return undefined;
+    };
+
+    /**
+     * Get metadata value from the namespace.
+     * @param namespaceName namespace name
+     * @returns metadata value
+     */
+    static getMetadataValue = async (namespaceName: string): Promise<string> => {
+        const namespaceId = new NamespaceId(namespaceName);
+        const metadatas = await MetadataRepository.getMetadata(namespaceId);
+
+        return metadatas[0]?.metadataEntry?.value ?? '';
+    };
+
+    /**
+     * Update metadata value from the namespace.
+     * @param privateKey Namespace owner private key
+     * @param namespaceName namespace name
+     * @param dnsRecord[] latest dns record
+     */
+    static updateMetadata = async (privateKey: string, namespaceName: string, dnsRecord: IDNSRecord[]): Promise<string> => {
+        const formattedData = Helper.dnsRecordToMetadataValue(dnsRecord);
+        const namespaceId = new NamespaceId(namespaceName);
+
+        try {
+            return await MetadataRepository.updateMetadata(privateKey, formattedData, namespaceId);
+        } catch (error) {
+            return `Error: ${(error as Error).message}`;
+        }
+    };
+
+    /**
+     * Check namespace is exist or not.
+     * @param namespaceName namespace name
+     * @returns boolean
+     */
+    static isNamespaceExist = async (namespaceName: string): Promise<boolean> => {
+        const namespaceId = new NamespaceId(namespaceName);
+
+        try {
+            await NamespaceRepository.getNamespace(namespaceId);
+            return true;
+        } catch (error) {
+            return false;
+        }
     };
 }
