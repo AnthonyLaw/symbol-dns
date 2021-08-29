@@ -17,7 +17,9 @@
 
             <div class="card">
                 <div class="title">DNS Record</div>
-                If you like to assgin link to use root namespace, you can use "@".
+                If you like to assgin link to use root namespace, you can use "@" in name field.
+                <br />
+                It support decentralized hosting as well, such as sia://file_hash or ipfs://file_hash in value field.
                 <table class="table-fixed">
                     <thead>
                         <tr>

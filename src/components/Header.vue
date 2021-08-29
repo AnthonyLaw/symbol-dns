@@ -6,6 +6,7 @@
         <SearchDomainInput />
         <div class="menu">
             <router-link to="/lookup"> Lookup </router-link>
+            <a href="https://github.com/AnthonyLaw/symbol-dns">Github</a>
         </div>
     </header>
 </template>
