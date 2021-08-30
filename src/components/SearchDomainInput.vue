@@ -22,7 +22,7 @@ export default class SearchDomainInput extends Vue {
 
         this.isRequest = true;
 
-        const domainName = this.domainInput.toLowerCase().split('.').reverse();
+        const domainName = this.domainInput.toLowerCase().trim().split('.').reverse();
 
         if (domainName.length > 0 && domainName.length < 3) {
             const resolveUrl = await Resolver.getURL(domainName);
